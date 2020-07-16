@@ -12,11 +12,11 @@ test('file_example_XLSX_10.xlsx', () => {
     );
     const workSheet = workBook.Sheets[workBook.SheetNames[0]];
 
-    expect(workSheet['!ref']).toBe('A1:H11');
+    expect(workSheet['!ref']).toBe('A1:H10');
 
     expect(getSheetRange(workSheet)).toEqual({
         begin: { row: 1, col: 'A' },
-        end: { row: 12, col: 'I' },
+        end: { row: 11, col: 'I' },
     });
 });
 
@@ -108,5 +108,13 @@ describe('sample.xlsx', () => {
         expect(() => getSheetRange(workSheet)).toThrow(
             'no data in this workSheet'
         );
+    });
+
+    test('3st sheet', () => {
+        const workSheet = workBook.Sheets[workBook.SheetNames[2]];
+        expect(getSheetRange(workSheet)).toEqual({
+            begin: { row: 1, col: 'A' },
+            end: { row: 2, col: 'B' },
+        });
     });
 });

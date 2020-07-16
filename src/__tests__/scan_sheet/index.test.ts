@@ -19,6 +19,23 @@ describe('file_example_XLSX_10.xlsx', () => {
                 .map((item) => item.content)
         ).toEqual(['Dulce', 'Mara', 'Philip']);
     });
+
+    test('row 2', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(2, { begin: 'A', end: 'I' }, workSheet)
+                .map((item) => item.content)
+        ).toEqual([
+            1,
+            'Dulce',
+            'Abril',
+            'Female',
+            'United States',
+            32,
+            '15/10/2017',
+            1562,
+        ]);
+    });
 });
 
 describe('file_example_XLSX_50.xlsx', () => {
@@ -33,6 +50,23 @@ describe('file_example_XLSX_50.xlsx', () => {
                 .scanColBetRowRange('c', { begin: 33, end: 38 }, workSheet)
                 .map((item) => item.content)
         ).toEqual(['Becker', 'Grindle', 'Claywell', 'Borger', 'Hacker']);
+    });
+
+    test('row 23', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(23, { begin: 'A', end: 'J' }, workSheet)
+                .map((item) => item.content)
+        ).toEqual([
+            22,
+            'Holly',
+            'Eudy',
+            'Female',
+            'United States',
+            52,
+            '16/08/2016',
+            8561,
+        ]);
     });
 });
 
@@ -49,6 +83,23 @@ describe('file_example_XLSX_100.xlsx', () => {
                 .map((item) => item.content)
         ).toEqual(['Female', 'Female', 'Female']);
     });
+
+    test('row 99', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(99, { begin: 'A', end: 'J' }, workSheet)
+                .map((item) => item.content)
+        ).toEqual([
+            98,
+            'Demetria',
+            'Abbey',
+            'Female',
+            'United States',
+            32,
+            '21/05/2015',
+            3265,
+        ]);
+    });
 });
 
 describe('file_example_XLSX_1000.xlsx', () => {
@@ -64,9 +115,26 @@ describe('file_example_XLSX_1000.xlsx', () => {
                 .map((item) => item.content)
         ).toEqual(['Great Britain', 'United States', 'France']);
     });
+
+    test('row 489', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(489, { begin: 'A', end: 'J' }, workSheet)
+                .map((item) => item.content)
+        ).toEqual([
+            488,
+            'Sau',
+            'Pfau',
+            'Female',
+            'United States',
+            25,
+            '21/05/2015',
+            9536,
+        ]);
+    });
 });
 
-describe('file_example_XLSX_1000.xlsx', () => {
+describe('file_example_XLSX_5000.xlsx', () => {
     const workBook = readFile(
         pathRelativeCurrDir('../sample_xlsx/file_example_XLSX_5000.xlsx')
     );
@@ -88,12 +156,37 @@ describe('file_example_XLSX_1000.xlsx', () => {
         ).toEqual(['16/08/2016', '21/05/2015', '15/10/2017', '16/08/2016']);
     });
 
-    test('G col', () => {
+    test('H col', () => {
         expect(
             scanSheet
                 .scanColBetRowRange('H', { begin: 4621, end: 4623 }, workSheet)
                 .map((item) => item.content)
         ).toEqual([3569, 2564]);
+    });
+
+    test('a col', () => {
+        expect(
+            scanSheet
+                .scanColBetRowRange('a', { begin: 5001, end: 5003 }, workSheet)
+                .map((item) => item.content)
+        ).toEqual([5000]);
+    });
+
+    test('row 4903', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(4903, { begin: 'A', end: 'J' }, workSheet)
+                .map((item) => item.content)
+        ).toEqual([
+            4902,
+            'Mara',
+            'Hashimoto',
+            'Female',
+            'Great Britain',
+            25,
+            '16/08/2016',
+            1582,
+        ]);
     });
 });
 
@@ -238,5 +331,34 @@ describe('Financial Sample.xlsx', () => {
                 .scanColBetRowRange('P', { begin: 1, end: 5 }, workSheet)
                 .map((item) => item.content)
         ).toEqual(['Year', '2014', '2014', '2014']);
+    });
+
+    test('row 561', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(561, { begin: 'A', end: 'Q' }, workSheet)
+                .map((item) =>
+                    item.idx !== 'M'
+                        ? item.content
+                        : excelDate2JsDate(item.content as number)
+                )
+        ).toEqual([
+            'Government',
+            'Mexico',
+            'Velo',
+            'High',
+            905,
+            120,
+            20,
+            18100,
+            2172,
+            15928,
+            9050,
+            6878,
+            new Date('2014-10-01'),
+            10,
+            'October',
+            '2014',
+        ]);
     });
 });

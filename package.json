@@ -13,7 +13,7 @@
     "scripts": {
         "clean": "rimraf dist",
         "build": "tsc -p tsconfig.json",
-        "test": "jest",
+        "test": "jest --coverage",
         "prepare": "npm-run-all clean build",
         "prepublishOnly": "npm-run-all test lint",
         "lint": "eslint src --ext .ts"
