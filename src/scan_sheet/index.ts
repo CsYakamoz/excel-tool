@@ -12,33 +12,48 @@ interface Range<T> {
 interface ScanResultItem<T> {
     width: number;
     height: number;
-    content: string | number | boolean;
+    content: string | number | boolean | undefined;
     idx: T;
+}
+
+interface ScanOption {
+    ignoreUndef: boolean;
 }
 
 export function scanColBetRowRange(
     col: string,
     rowRange: Range<number>,
-    workSheet: WorkSheet
+    workSheet: WorkSheet,
+    option: ScanOption = { ignoreUndef: true }
 ): ScanResultItem<number>[] {
-    const result = [];
+    const result: ScanResultItem<number>[] = [];
 
-    for (let r = rowRange.begin; r < rowRange.end; r++) {
+    for (let r = rowRange.begin; r < rowRange.end; ) {
         const value = getCellValue(col, r, workSheet);
 
         if (value === undefined) {
-            continue;
+            if (!option.ignoreUndef) {
+                result.push({
+                    width: 1,
+                    height: 1,
+                    content: undefined,
+                    idx: r,
+                });
+            }
+
+            r++;
+        } else {
+            const { width, height } = getCellWidthHeight(col, r, workSheet);
+            result.push({
+                width,
+                height,
+
+                content: value,
+                idx: r,
+            });
+
+            r += height;
         }
-
-        const { width, height } = getCellWidthHeight(col, r, workSheet);
-
-        result.push({
-            width,
-            height,
-
-            content: value,
-            idx: r,
-        });
     }
 
     return result;
@@ -47,31 +62,46 @@ export function scanColBetRowRange(
 export function scanRowBetColRange(
     row: number,
     colRange: Range<string>,
-    workSheet: WorkSheet
+    workSheet: WorkSheet,
+    option: ScanOption = { ignoreUndef: true }
 ): ScanResultItem<string>[] {
-    const result = [];
+    const result: ScanResultItem<string>[] = [];
     const numColRange = {
         begin: strToNumber(colRange.begin),
         end: strToNumber(colRange.end),
     };
 
-    for (let c = numColRange.begin; c < numColRange.end; c++) {
+    for (let c = numColRange.begin; c < numColRange.end; ) {
         const strCol = numberToStr(c);
         const value = getCellValue(strCol, row, workSheet);
 
         if (value === undefined) {
-            continue;
+            if (!option.ignoreUndef) {
+                result.push({
+                    width: 1,
+                    height: 1,
+                    content: undefined,
+                    idx: strCol,
+                });
+            }
+
+            c++;
+        } else {
+            const { width, height } = getCellWidthHeight(
+                strCol,
+                row,
+                workSheet
+            );
+
+            result.push({
+                width,
+                height,
+
+                content: value,
+                idx: strCol,
+            });
+            c += width;
         }
-
-        const { width, height } = getCellWidthHeight(strCol, row, workSheet);
-
-        result.push({
-            width,
-            height,
-
-            content: value,
-            idx: strCol,
-        });
     }
 
     return result;

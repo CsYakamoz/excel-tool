@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { readFile } from 'xlsx';
-import { scanSheet, excelDate2JsDate } from '../../index';
+import { scanSheet, excelDate2JsDate, updateCellAddress } from '../../index';
 
 function pathRelativeCurrDir(path: string) {
     return join(__dirname, path);
@@ -360,5 +360,67 @@ describe('Financial Sample.xlsx', () => {
             'October',
             '2014',
         ]);
+    });
+});
+
+describe('sample.xlsx', () => {
+    const workBook = readFile(
+        pathRelativeCurrDir('../sample_xlsx/sample.xlsx')
+    );
+    const workSheet = workBook.Sheets[workBook.SheetNames[3]];
+
+    test('scan row', () => {
+        expect(
+            scanSheet
+                .scanColBetRowRange('a', { begin: 2, end: 16 }, workSheet, {
+                    ignoreUndef: false,
+                })
+                .map((item) => ({ idx: item.idx, content: item.content }))
+        ).toEqual(
+            [
+                'a',
+                'b',
+                undefined,
+                'c',
+                'd',
+                undefined,
+                'e',
+                undefined,
+                'f',
+                'g',
+                'i',
+                'j',
+                undefined,
+                'k',
+            ].map((item, idx) => ({ content: item, idx: idx + 2 }))
+        );
+    });
+
+    test('scan col', () => {
+        expect(
+            scanSheet
+                .scanRowBetColRange(1, { begin: 'b', end: 'N' }, workSheet, {
+                    ignoreUndef: false,
+                })
+                .map((item) => ({ idx: item.idx, content: item.content }))
+        ).toEqual(
+            [
+                'a',
+                undefined,
+                'b',
+                'c',
+                undefined,
+                'f',
+                'g',
+                undefined,
+                'i',
+                undefined,
+                'j',
+                'k',
+            ].map((item, idx) => ({
+                idx: updateCellAddress.col('b', idx),
+                content: item,
+            }))
+        );
     });
 });
