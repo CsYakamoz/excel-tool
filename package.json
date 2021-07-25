@@ -30,7 +30,7 @@
         "typescript": "^3.9.2"
     },
     "dependencies": {
-        "xlsx": "^0.16.3"
+        "xlsx": "^0.17.0"
     },
     "keywords": [
         "excel",
